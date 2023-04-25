@@ -1,12 +1,12 @@
 import math
-import cv2
-import autopy
-import mediapipe as mp
-import numpy as np
+import cv2 # pip install opencv-python
+import autopy # pip install autopy
+import mediapipe as mp # pip install mediapipe
+import numpy as np # pip install numpy
 
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(0) # ваш камера
 
-width, height = autopy.screen.size()
+width, height = autopy.screen.size() # размер окно
 
 hands = mp.solutions.hands.Hands(static_image_mode=False,
                          max_num_hands=1,
@@ -15,9 +15,10 @@ hands = mp.solutions.hands.Hands(static_image_mode=False,
 
 mpDraw = mp.solutions.drawing_utils
 
-from ctypes import cast, POINTER
-from comtypes import CLSCTX_ALL
-from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
+############################ настройка комп звук ######################################
+from ctypes import cast, POINTER # pip install ctypes
+from comtypes import CLSCTX_ALL # pip install comptypes
+from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume # pip install pycaw
 devices = AudioUtilities.GetSpeakers()
 interface = devices.Activate(
     IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
@@ -31,7 +32,7 @@ maxVol = volRange[1]
 volBar = 400
 vol = 0
 volPer = 0
-
+##########################################################################################
 while True:
     _, img = cap.read()
     result = hands.process(img)
@@ -41,12 +42,12 @@ while True:
             h, w, _ = img.shape
             cx, cy = int(lm.x * w), int(lm.y * h)
             cv2.circle(img, (cx, cy), 3, (250, 0, 255))
-            if id == 4:
+            if id == 4: # указательный палец
                 x1 = cx
                 y1 = cy
                 # print(x1, y1)
                 cv2.circle(img, (cx, cy), 20, (250, 0, 255), cv2.FILLED)
-            if id == 8:
+            if id == 8: # болшой палец
                 x2 = cx
                 y2 = cy
                 cx1, cy1 = (x1+x2) // 2, (y1+y2) // 2
@@ -74,7 +75,7 @@ while True:
 
         mpDraw.draw_landmarks(img, result.multi_hand_landmarks[0], mp.solutions.hands.HAND_CONNECTIONS)
 
-    cv2.imshow("darmen", img)
+    cv2.imshow("darmen", img) # название окно
     k = cv2.waitKey(1)
     if k == ord("q"):
         break
